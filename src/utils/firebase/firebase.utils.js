@@ -6,6 +6,14 @@ import {
     GoogleAuthProvider
  } from 'firebase/auth';
 
+ import { 
+    getFirestore,
+    doc,
+    getDoc,
+    setDoc,
+    collection
+ } from 'firebase/firestore'
+
 const firebaseConfig = {
     apiKey: "AIzaSyBzou7nVkpDVnH_-XnflNsaFyRvxOyHMyQ",
     authDomain: "crwn-clothing-db-a94ef.firebaseapp.com",
@@ -25,6 +33,28 @@ provider.setCustomParameters({               // this will take objects
 
 export const auth = getAuth();  
 export const signInWithGooglePopup = () => signInWithPopup(auth,provider)
-
-
 // auth is a singleton where as provider is a class
+
+export const db = getFirestore();
+
+export const createUserDocumentFromAuth = async (userAuth) => {
+    const userDocRef = doc(db, 'users', userAuth.uid);
+    const userSnapshot = await getDoc(userDocRef);
+
+    if(!userSnapshot.exists()) {
+        const { displayName, email } = userAuth;
+        const createdAt = new Date();
+
+        try {
+            await setDoc(userDocRef , {
+                displayName,
+                email,
+                createdAt
+            });
+        }
+        catch(err) {
+            console.log("Error while creating a user" , err);
+        }
+    }
+    return userDocRef;
+};
