@@ -6,6 +6,7 @@ import {
 // import Authentication from '../../components/sign-up-form/sign-up-form.component';
 import SignInForm from '../../components/sign-in-form/sign-in-form.component';
 import SignupForm from '../../components/sign-up-form/sign-up-form.component';
+import '../authentication/authentication.styles.scss'
   
   const Authentication = () => {
     const logGoogleUser = async () => {
@@ -14,8 +15,7 @@ import SignupForm from '../../components/sign-up-form/sign-up-form.component';
     };
   
     return (
-      <div>
-        <h1>Sign In Page</h1>
+      <div className='authentication-conatiner'>
         <SignInForm />
         <SignupForm />
         {/* <Authentication /> */}
