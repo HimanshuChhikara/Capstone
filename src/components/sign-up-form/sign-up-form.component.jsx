@@ -2,6 +2,8 @@ import { useState } from "react";
 import FormInput from "../form-input/form-input.component";
 import Button from "../button/button.component";
 import { createAuthUserWithEmailAndPassword, createUserDocumentFromAuth } from '../../utils/firebase/firebase.utils';
+import { useContext } from "react";
+import { UserContext } from "../../context/user.context";
 
 const defaultFormFields = {
     displayName : '',
@@ -12,6 +14,8 @@ const defaultFormFields = {
 const SignupForm = () => {
     const [formFields, setFormFields] = useState(defaultFormFields);
     const { displayName , email, password, confirmPassword} = formFields;
+
+    const {setCurrentUser} = useContext(UserContext);
 
     const resetFormFields = async() => {
         setFormFields(defaultFormFields);
@@ -28,6 +32,7 @@ const SignupForm = () => {
             const { user } = await createAuthUserWithEmailAndPassword(email, password);
 
             await createUserDocumentFromAuth(user, {displayName});
+            setCurrentUser(user);
             resetFormFields();
 
         }
@@ -40,6 +45,7 @@ const SignupForm = () => {
             }
             console.log("Error in register email" ,err);
         }
+        console.log("Default Form Fields -- ",defaultFormFields)    
     }
 
     const handleChange = (event) => {
@@ -55,7 +61,7 @@ const SignupForm = () => {
                 <FormInput label="Email" type="email" required onChange={handleChange} name= "email" value={email}/>
                 <FormInput label="Password" type="password" required onChange={handleChange} name= "password" value={password}/>
                 <FormInput label="Confirm Password" type="password" required onChange={handleChange} name= "confirmPassword" value={confirmPassword}/>
-                <Button type="submit">Sign Up</Button>
+                <Button type="submit" >Sign Up</Button>
             </form>
         </div>
     )
