@@ -28,6 +28,7 @@ const SignInForm = () => {
         try {
             const {user} = await signInAuthUserWithEmailAndPassword(email, password);
             setCurrentUser(user)
+            console.log("Response from Firebase --- ",user);
             resetFormFields();
 
         }
