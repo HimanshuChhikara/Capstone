@@ -26,13 +26,32 @@ const deleteCartItem = (cartItems,product) => {
     return [...cartItems];
     
 }
+
+const clearCartItem = (cartItems,product) => {
+    return cartItems.filter((cartItem) => cartItem.id !== product.id)
+    
+}
+
+const cartTotalCalculate = (cartItems) => {
+    let total = 0;
+    let singleItem = 0
+    cartItems.map((cartItem) => {
+        singleItem = parseInt(cartItem.quantity) * parseInt(cartItem.price); 
+        total = total + singleItem;
+    })
+    return total
+}
+
 export const CartContext = createContext({
     isCartOpen: false,
     setIsCartOpen: () => {},
     cartItems:[],
     addItemToCart: () => {},
     deleteItemToCart: () => {},
+    clearItemFromCart: () => {},
     cartCount: 0,
+    cartTotal:0,
+    calculateCartTotal: () => {},
 })
 
 
@@ -41,10 +60,17 @@ export const CartProvider = ({children}) => {
     const [isCartOpen,setIsCartOpen] = useState(false);
     const [cartItems,setCartItems] = useState([]);
     const [cartCount,setCartCount] = useState(0);
+    const [cartTotal,setCartTotal] = useState(0);
 
     useEffect(() => {
         const newCartCount = cartItems.reduce((total,cartItem) => total + cartItem.quantity ,0);
         setCartCount(newCartCount);
+    },[cartItems])
+
+    
+    useEffect(() => {
+        const finalTotal = cartTotalCalculate(cartItems);
+        setCartTotal(finalTotal);
     },[cartItems])
 
     const addItemToCart = (product) => {
@@ -54,7 +80,15 @@ export const CartProvider = ({children}) => {
     const deleteItemToCart = (product) => {
         setCartItems(deleteCartItem(cartItems,product));
     }
-    const value = {isCartOpen,setIsCartOpen,addItemToCart,deleteItemToCart,cartItems,cartCount}
+
+    const clearItemFromCart = (product) => {
+        setCartItems(clearCartItem(cartItems,product));
+    }
+
+    const calculateCartTotal = () => {
+        setCartTotal(cartTotal(cartItems));
+    }
+    const value = {isCartOpen,setIsCartOpen,addItemToCart,deleteItemToCart,clearItemFromCart,cartItems,cartCount,cartTotal,calculateCartTotal}
     return (
         <CartContext.Provider value={value}>{children}</CartContext.Provider>
     )
