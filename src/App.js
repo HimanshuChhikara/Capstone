@@ -4,10 +4,18 @@ import Navigation  from './routes/navigation/navigation.component';
 import Authentication from './routes/authentication/authentication.component';
 import Shop from './routes/shop/shop.component';
 import CheckOut from './routes/checkout/checkout.component';
+import { useGoogleOneTapLogin } from 'react-google-one-tap-login'
 
 
 
 const App = () => {
+  useGoogleOneTapLogin({
+    onSuccess : (response) => {console.log(response)},
+    onError : (error) => console.log(error),
+    googleAccountConfigs: {
+      client_id: "924163860388-hsaip18ec9cigpnceuru4gpqj35hc5v6.apps.googleusercontent.com"
+    }
+  })
   return (
     <Routes>
       <Route path='/' element={<Navigation />}>
